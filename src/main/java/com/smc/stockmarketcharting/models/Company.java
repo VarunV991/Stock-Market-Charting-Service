@@ -7,6 +7,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -30,9 +31,12 @@ public class Company {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Sector sector;
 
-    @OneToOne(targetEntity = Ipo.class)
+    @OneToOne(targetEntity = Ipo.class,
+            cascade = CascadeType.ALL,
+            mappedBy = "company")
     private Ipo ipo;
 
-    @OneToMany(targetEntity = StockPrice.class)
-    private List<StockPrice> stockPrices;
+    @OneToMany(targetEntity = StockPrice.class,
+            mappedBy = "company")
+    private List<StockPrice> stockPrices = new ArrayList<>();
 }

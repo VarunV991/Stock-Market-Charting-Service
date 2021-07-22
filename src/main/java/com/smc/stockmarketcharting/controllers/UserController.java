@@ -36,4 +36,9 @@ public class UserController {
         return userService.confirmationPage(userId);
     }
 
+    @PostMapping(value = "/login")
+    public String login(@RequestBody UserDto userDto){
+        return userService.login(userDto);
+    }
+
 }

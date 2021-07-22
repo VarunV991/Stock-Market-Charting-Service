@@ -2,6 +2,8 @@ package com.smc.stockmarketcharting.mappers;
 
 import com.smc.stockmarketcharting.dtos.CompanyDto;
 import com.smc.stockmarketcharting.models.Company;
+import com.smc.stockmarketcharting.models.CompanyExchangeCode;
+import com.smc.stockmarketcharting.repositories.CompanyExchangeCodeRepository;
 import com.smc.stockmarketcharting.repositories.SectorRepository;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -18,12 +20,25 @@ public class CompanyMapper {
     @Autowired
     SectorRepository sectorRepository;
 
+    @Autowired
+    CompanyExchangeCodeRepository exchangeCodeRepository;
+
     public CompanyDto toCompanyDto(Company company){
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         CompanyDto companyDto = mapper.map(company,CompanyDto.class);
         if(company.getSector()!=null){
             companyDto.setSectorName(company.getSector().getName());
+        }
+        List<CompanyExchangeCode> exchangeCodeList = exchangeCodeRepository
+                .findCompanyExchangeCodesByCompany(company);
+        String exchangeCodes = "";
+        for (CompanyExchangeCode exchangeCode:exchangeCodeList){
+            exchangeCodes += exchangeCode.getStockExchange().getName() + ",";
+        }
+        if(exchangeCodes.length()>0){
+            exchangeCodes = exchangeCodes.substring(0,exchangeCodes.length()-1);
+            companyDto.setExchanges(exchangeCodes);
         }
         return companyDto;
     }

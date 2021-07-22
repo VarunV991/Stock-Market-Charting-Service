@@ -43,8 +43,8 @@ public class UserServiceImpl implements UserService {
     public void sendEmail(Long userid) throws AddressException, MessagingException{
         logger.debug(Long.toString(userid));
         User user = userRepository.findById(userid).get();
-        final String username = "vvs19999@gmail.com";
-        final String password = "varun@vicky";
+        final String username = "smcroot7@gmail.com";
+        final String password = "root@123";
 
         Properties prop = new Properties();
         prop.put("mail.smtp.host", "smtp.gmail.com");
@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
         try {
 
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("vvs19999@gmail.com"));
+            message.setFrom(new InternetAddress("smcroot7@gmail.com"));
             message.setRecipients(
                     Message.RecipientType.TO,
                     InternetAddress.parse(user.getEmail())
@@ -90,5 +90,15 @@ public class UserServiceImpl implements UserService {
         user.setConfirmed(true);
         userRepository.save(user);
         return "User confirmed: " +user.getUsername();
+    }
+
+    @Override
+    public String login(UserDto userDto){
+        if(userDto.getUsername()=="root"){
+            return "ADMIN";
+        }
+        else{
+            return "USER";
+        }
     }
 }

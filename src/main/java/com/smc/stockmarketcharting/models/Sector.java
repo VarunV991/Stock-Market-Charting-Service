@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -20,6 +21,12 @@ public class Sector {
     private String name;
     private String description;
 
-    @OneToMany(targetEntity = Company.class)
-    private List<Company> companies;
+    @OneToMany(targetEntity = Company.class,
+            mappedBy = "sector")
+    private List<Company> companies = new ArrayList<>();
+
+    public Sector(String name,String description){
+        this.name = name;
+        this.description = description;
+    }
 }

@@ -7,14 +7,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CompanyDto {
+public class StockExchangeDto {
     private long id;
     private String name;
-    private String turnover;
-    private String ceo;
     private String description;
-    private String boardOfDirectors;
-    private String sectorName;
-    private String exchanges;
-    private String exchangeCode;
+    private String address;
+    private String remarks;
 }

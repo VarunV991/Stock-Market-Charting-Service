@@ -12,5 +12,6 @@ public interface UserService {
 
     public UserDto addUser(UserDto userDto) throws AddressException, MessagingException;
     public void sendEmail(Long userid) throws AddressException, MessagingException;
+    public String login(UserDto userDto);
     public String confirmationPage(Long userId);
 }

@@ -22,9 +22,10 @@ public class StockExchange {
     private String address;
     private String remarks;
 
-    @OneToMany(targetEntity = CompanyExchangeCode.class)
-    private List<CompanyExchangeCode> companyExchangeCodes;
-
-    @OneToMany(targetEntity = StockPrice.class)
-    private List<StockPrice> stockPrices;
+    public StockExchange(String name,String description,String address,String remarks){
+        this.name = name;
+        this.description = description;
+        this.remarks = remarks;
+        this.address = address;
+    }
 }
