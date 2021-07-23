@@ -13,6 +13,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.text.ParseException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin
@@ -55,12 +56,23 @@ public class StockPriceController {
         return ResponseEntity.ok(stockPriceDtos);
     }
 
+    @GetMapping(value = "/{name}")
+    public ResponseEntity<Object> getStockPricesForCompany(@PathVariable String name){
+        List<StockPriceDto> stockPriceDtos = stockPriceService.getStockPricesForCompany(name);
+        if(stockPriceDtos==null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    "Could not find company with name: "+name
+            );
+        }
+        return ResponseEntity.ok(stockPriceDtos);
+    }
+
     @GetMapping("/company/{id}/{exchangeName}/{fromDate}/{toDate}/{periodicity}")
     public ResponseEntity<Object> getStockPricesForCompanyComparison(
             @PathVariable long id,@PathVariable String exchangeName,@PathVariable String fromDate,
             @PathVariable String toDate, @PathVariable String periodicity){
         try{
-            List<StockPriceOutputDto> stockPriceDtos =
+            Map<String,Double> stockPriceDtos =
                     stockPriceService.getStockPricesForCompanyComparison(
                             id, exchangeName, fromDate, toDate, periodicity);
             if(stockPriceDtos == null){
@@ -80,7 +92,7 @@ public class StockPriceController {
             @PathVariable long id,@PathVariable String exchangeName,@PathVariable String fromDate,
             @PathVariable String toDate,@PathVariable String periodicity){
         try{
-            List<StockPriceOutputDto> stockPriceDtos =
+            Map<String,Double> stockPriceDtos =
                     stockPriceService.getStockPricesForSectorComparison(
                             id, exchangeName, fromDate, toDate, periodicity);
             if(stockPriceDtos == null){

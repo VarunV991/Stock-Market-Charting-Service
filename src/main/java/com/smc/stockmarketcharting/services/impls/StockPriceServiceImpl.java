@@ -83,7 +83,16 @@ public class StockPriceServiceImpl implements StockPriceService {
     }
 
     @Override
-    public List<StockPriceOutputDto> getStockPricesForCompanyComparison(
+    public List<StockPriceDto> getStockPricesForCompany(String name){
+        Company company = companyRepository.findCompanyByName(name).orElse(null);
+        if(company!=null){
+            return stockPriceMapper.toStockPriceDtos(company.getStockPrices());
+        }
+        return null;
+    }
+
+    @Override
+    public Map<String,Double> getStockPricesForCompanyComparison(
             long id,String exchangeName,String fromDate,String toDate,String periodicity){
         Company company = companyRepository.findById(id).orElse(null);
         if(company!=null){
@@ -96,7 +105,7 @@ public class StockPriceServiceImpl implements StockPriceService {
 
 
     @Override
-    public List<StockPriceOutputDto> getStockPricesForSectorComparison(
+    public Map<String,Double> getStockPricesForSectorComparison(
             long id,String exchangeName,String fromDate,String toDate,String periodicity){
         Sector sector = sectorRepository.findById(id).orElse(null);
         if(sector != null){
@@ -134,23 +143,23 @@ public class StockPriceServiceImpl implements StockPriceService {
                 dateExistsMap.put(fromPeriod,Boolean.TRUE);
                 Date startDate = dateFormat.parse(fromPeriod);
                 switch (periodicity) {
-                    case "day": {
+                    case "Day": {
                         Date nextDate = new Date(startDate.getTime() + 24 * 60 * 60 * 1000);
                         fromPeriod = dateFormat.format(nextDate);
                         break;
                     }
-                    case "week": {
+                    case "Week": {
                         Date nextDate = new Date(startDate.getTime() + 7 * 24 * 60 * 60 * 1000);
                         fromPeriod = dateFormat.format(nextDate);
                         break;
                     }
-                    case "month": {
+                    case "Month": {
                         calendar.setTime(startDate);
                         calendar.add(Calendar.MONTH, 1);
                         fromPeriod = dateFormat.format(calendar.getTime());
                         break;
                     }
-                    case "quarter": {
+                    case "Quarter": {
                         calendar.setTime(startDate);
                         calendar.add(Calendar.MONTH, 3);
                         fromPeriod = dateFormat.format(calendar.getTime());
@@ -164,7 +173,7 @@ public class StockPriceServiceImpl implements StockPriceService {
         return dateExistsMap;
     }
 
-    private List<StockPriceOutputDto> getStockPriceOutputDtos(List<StockPriceDto> stockPriceDtos) {
+    private Map<String,Double> getStockPriceOutputDtos(List<StockPriceDto> stockPriceDtos) {
         TreeMap<String, StockPriceOutputDto> datePriceMap = new TreeMap<>();
         for(StockPriceDto stockPriceDto: stockPriceDtos){
             String date = stockPriceDto.getDate();
@@ -179,9 +188,11 @@ public class StockPriceServiceImpl implements StockPriceService {
             }
         }
         List<StockPriceOutputDto> outputDtos = new ArrayList<>(datePriceMap.values());
+        Map<String,Double> outputMap = new TreeMap<>();
         for(StockPriceOutputDto outputDto:outputDtos){
-            outputDto.setPrice(outputDto.getPrice()/ outputDto.getNoOfEntries());
+            outputMap.put(outputDto.getDate(),
+                    Double.valueOf(outputDto.getPrice()/outputDto.getNoOfEntries()));
         }
-        return outputDtos;
+        return outputMap;
     }
 }

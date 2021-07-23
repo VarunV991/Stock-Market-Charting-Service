@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public interface StockPriceService {
@@ -13,8 +14,9 @@ public interface StockPriceService {
     public String deleteById(long id);
     public StockPriceDto save(StockPriceDto stockPriceDto);
     public List<StockPriceDto> saveList(List<StockPriceDto> stockPriceDtos);
-    List<StockPriceOutputDto> getStockPricesForCompanyComparison(
+    Map<String,Double> getStockPricesForCompanyComparison(
             long id,String exchangeName,String fromDate,String toDate,String periodicity);
-    List<StockPriceOutputDto> getStockPricesForSectorComparison(
+    Map<String,Double> getStockPricesForSectorComparison(
             long id,String exchangeName,String fromDate,String toDate,String periodicity);
+    List<StockPriceDto> getStockPricesForCompany(String name);
 }

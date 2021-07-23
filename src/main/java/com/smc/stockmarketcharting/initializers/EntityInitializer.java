@@ -34,7 +34,7 @@ public class EntityInitializer implements CommandLineRunner {
         Sector sector4 = new Sector("Materials",
                 "Companies that provide various goods for use in manufacturing and other applications");
         sectorRepository.save(sector4);
-        Sector sector5 = new Sector("Information Technology",
+        Sector sector5 = new Sector("IT",
                 "Companies involved in the different categories of technological innovation");
         sectorRepository.save(sector5);
 
