@@ -15,7 +15,7 @@ import java.util.List;
 @Table(name = "Sector")
 public class Sector {
 
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private long id;
     private String name;

@@ -75,15 +75,4 @@ public class IpoServiceImpl implements IpoService {
         }
         return null;
     }
-
-    @Override
-    public String deleteById(long id) {
-        try{
-            ipoRepository.deleteById(id);
-            return "Successfully deleted the ipo";
-        }
-        catch (Exception e) {
-            throw new RuntimeException("Could delete the ipo: " + e.getMessage());
-        }
-    }
 }

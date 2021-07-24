@@ -5,6 +5,7 @@ import com.smc.stockmarketcharting.services.IpoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -45,16 +46,5 @@ public class IpoController {
     public ResponseEntity<IpoDto> update(@RequestBody IpoDto ipoDto){
         IpoDto ipo = ipoService.update(ipoDto);
         return ResponseEntity.ok(ipo);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteById(@PathVariable long id){
-        try{
-            String message = ipoService.deleteById(id);
-            return ResponseEntity.ok(message);
-        }
-        catch (Exception e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
     }
 }

@@ -20,7 +20,6 @@ public class UserMapper {
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         User user = mapper.map(userDto,User.class);
-        user.setType("USER");
         return user;
     }
 }

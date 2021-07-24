@@ -11,5 +11,4 @@ public interface IpoService {
     public IpoDto findById(long id);
     public IpoDto save(IpoDto ipoDto);
     public IpoDto update(IpoDto ipoDto);
-    public String deleteById(long id);
 }

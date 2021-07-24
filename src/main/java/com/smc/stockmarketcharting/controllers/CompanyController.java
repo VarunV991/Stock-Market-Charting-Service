@@ -7,6 +7,7 @@ import com.smc.stockmarketcharting.services.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class CompanyController {
     CompanyService companyService;
 
     @GetMapping(value = "/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Object> findById(@PathVariable long id){
         CompanyDto companyDto = companyService.findById(id);
         if(companyDto == null){
@@ -30,12 +32,14 @@ public class CompanyController {
     }
 
     @GetMapping(value = "")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<CompanyDto>> findAll(){
         List<CompanyDto> companyDtoList = companyService.findAll();
         return ResponseEntity.ok(companyDtoList);
     }
 
     @PostMapping(value = "/add")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Object> addCompany(@RequestBody CompanyDto companyDto){
         CompanyDto company = companyService.addCompany(companyDto);
         if(company == null){
@@ -46,6 +50,7 @@ public class CompanyController {
     }
 
     @PutMapping(value = "/edit")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Object> editCompany(@RequestBody CompanyDto companyDto){
         CompanyDto company = companyService.editCompany(companyDto);
         if(company == null){
@@ -56,6 +61,7 @@ public class CompanyController {
     }
 
     @DeleteMapping(value = "/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> deleteById(@PathVariable long id){
         try{
             String message = companyService.deleteById(id);
@@ -67,6 +73,7 @@ public class CompanyController {
     }
 
     @PostMapping(value = "/{companyName}/addExchangeCodes")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> mapCompanyExchangeCode(@PathVariable String companyName,
                                                          @RequestBody List<CompanyExchangeCodeMappingDto> exchangeCodes){
         try{
@@ -83,6 +90,7 @@ public class CompanyController {
     }
 
     @GetMapping(value = "/{companyName}/ipo")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Object> getCompanyIpoDetails(@PathVariable String companyName){
         try{
             IpoDto ipoDto = companyService.getCompanyIpoDetails(companyName);

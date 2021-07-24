@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Table(name = "Ipo")
 public class Ipo {
 
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private long id;
     private String exchangeName;

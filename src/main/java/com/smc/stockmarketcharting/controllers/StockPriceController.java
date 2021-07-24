@@ -7,6 +7,7 @@ import com.smc.stockmarketcharting.services.StockPriceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -26,6 +27,7 @@ public class StockPriceController {
     StockPriceService stockPriceService;
 
     @PostMapping(value = "/add",consumes = "application/json")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Object> save(@RequestBody StockPriceDto stockPriceDto){
 
         StockPriceDto stockPrice = stockPriceService.save(stockPriceDto);
@@ -40,6 +42,7 @@ public class StockPriceController {
     }
 
     @PostMapping(value = "/addList")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Object> save(@RequestBody List<StockPriceDto> stockPriceDtos){
 
         List<StockPriceDto> stockPrices = stockPriceService.saveList(stockPriceDtos);
@@ -51,12 +54,14 @@ public class StockPriceController {
     }
 
     @GetMapping(value = "",produces = "application/json")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<StockPriceDto>> findAll(){
         List<StockPriceDto> stockPriceDtos = stockPriceService.findAll();
         return ResponseEntity.ok(stockPriceDtos);
     }
 
     @GetMapping(value = "/{name}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Object> getStockPricesForCompany(@PathVariable String name){
         List<StockPriceDto> stockPriceDtos = stockPriceService.getStockPricesForCompany(name);
         if(stockPriceDtos==null){
@@ -68,6 +73,7 @@ public class StockPriceController {
     }
 
     @GetMapping("/company/{id}/{exchangeName}/{fromDate}/{toDate}/{periodicity}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Object> getStockPricesForCompanyComparison(
             @PathVariable long id,@PathVariable String exchangeName,@PathVariable String fromDate,
             @PathVariable String toDate, @PathVariable String periodicity){
@@ -88,6 +94,7 @@ public class StockPriceController {
     }
 
     @GetMapping("/sector/{id}/{exchangeName}/{fromDate}/{toDate}/{periodicity}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Object> getStockPricesForSectorComparison(
             @PathVariable long id,@PathVariable String exchangeName,@PathVariable String fromDate,
             @PathVariable String toDate,@PathVariable String periodicity){

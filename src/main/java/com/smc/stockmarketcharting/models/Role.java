@@ -3,7 +3,6 @@ package com.smc.stockmarketcharting.models;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
 
@@ -11,17 +10,18 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "CompanyExchangeCode")
-public class CompanyExchangeCode {
+@Table(name= "Role")
+public class Role {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private long id;
-    private String companyCode;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Company company;
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private ERole name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private StockExchange stockExchange;
+    public Role(ERole name){
+        this.name = name;
+    }
 }

@@ -14,7 +14,7 @@ import java.util.List;
 @Table(name = "StockExchange")
 public class StockExchange {
 
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private long id;
     private String name;

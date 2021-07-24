@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService {
             );
             message.setSubject("User confirmation email");
             message.setContent(
-                    "<h3><a href =\"http://127.0.0.1:8080/confirmuser/"+userid+"/\"> Click to confirm </a></h3>",
+                    "<h3><a href =\"https://smc-service.herokuapp.com/user/confirmuser/"+userid+"/\"> Click to confirm </a></h3>",
                     "text/html");
             Transport.send(message);
 

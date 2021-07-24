@@ -17,7 +17,7 @@ import java.util.Date;
 @Table(name = "StockPrice")
 public class StockPrice {
 
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private long id;
     private float price;
