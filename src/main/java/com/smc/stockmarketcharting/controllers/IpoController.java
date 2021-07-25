@@ -43,8 +43,20 @@ public class IpoController {
     }
 
     @PutMapping("/edit")
-    public ResponseEntity<IpoDto> update(@RequestBody IpoDto ipoDto){
-        IpoDto ipo = ipoService.update(ipoDto);
-        return ResponseEntity.ok(ipo);
+    public ResponseEntity<Object> update(@RequestBody IpoDto ipoDto){
+        try{
+            IpoDto ipo = ipoService.update(ipoDto);
+            if (ipo == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                        "Could not find company with name: " + ipoDto.getCompanyName()
+                );
+            }
+            return ResponseEntity.ok(ipo);
+        }
+        catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    "Could not find ipo with id: "+ipoDto.getId()
+            );
+        }
     }
 }

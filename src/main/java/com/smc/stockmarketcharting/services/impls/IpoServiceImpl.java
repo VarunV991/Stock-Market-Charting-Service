@@ -63,15 +63,13 @@ public class IpoServiceImpl implements IpoService {
                     ipo.setCompany(company);
                     company.setIpo(ipo);
                     companyRepository.save(company);
-                }
-                else{
-                    ipo.setCompany(null);
+                    ipo = ipoRepository.save(ipo);
+                    return ipoMapper.toIpoDto(ipo);
                 }
             }
-            else{
-                ipo.setCompany(null);
-            }
-            ipo = ipoRepository.save(ipo);
+        }
+        else{
+            throw new RuntimeException("Could not find ipo with id: "+ipoDto.getId());
         }
         return null;
     }

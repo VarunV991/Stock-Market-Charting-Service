@@ -7,10 +7,14 @@ import com.smc.stockmarketcharting.models.Role;
 import com.smc.stockmarketcharting.models.User;
 import com.smc.stockmarketcharting.repositories.RoleRepository;
 import com.smc.stockmarketcharting.repositories.UserRepository;
+import com.smc.stockmarketcharting.security.jwt.AuthEntryPointJwt;
 import com.smc.stockmarketcharting.security.jwt.JwtUtils;
 import com.smc.stockmarketcharting.security.services.UserDetailsImpl;
 import com.smc.stockmarketcharting.services.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -46,46 +50,53 @@ public class UserController {
     @Autowired
     UserService userService;
 
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody UserDto userDto) {
+        try{
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(userDto.getUsername(), userDto.getPassword()));
 
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(userDto.getUsername(), userDto.getPassword()));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            String jwt = jwtUtils.generateJwtToken(authentication);
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtUtils.generateJwtToken(authentication);
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+            if (userDetails.isConfirmed()) {
+                String role = userDetails.getAuthorities().stream()
+                        .map(item -> item.getAuthority())
+                        .collect(Collectors.toList()).get(0);
 
-        if(userDetails.isConfirmed()){
-            String role = userDetails.getAuthorities().stream()
-                    .map(item -> item.getAuthority())
-                    .collect(Collectors.toList()).get(0);
-
-            return ResponseEntity.ok(new JwtResponseDto(jwt,
-                    userDetails.getId(),
-                    userDetails.getUsername(),
-                    userDetails.getEmail(),
-                    userDetails.getMobileNumber(),
-                    role));
+                return ResponseEntity.ok(new JwtResponseDto(jwt,
+                        userDetails.getId(),
+                        userDetails.getUsername(),
+                        userDetails.getEmail(),
+                        userDetails.getMobileNumber(),
+                        role));
+            }
+            return ResponseEntity.status(401).body(
+                    "The user has not yet been confirmed. " +
+                            "Please check your registered email to confirm your account.");
         }
-        return ResponseEntity.status(401).body(
-                "The user has not yet been confirmed. " +
-                        "Please check your registered email to confirm your account.");
+        catch (Exception e){
+            logger.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found. Please enter valid " +
+                    "credentials.");
+        }
     }
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody UserDto userDto) {
         if (userRepository.existsByUsername(userDto.getUsername())) {
             return ResponseEntity
-                    .badRequest()
+                    .status(HttpStatus.BAD_REQUEST)
                     .body("Error: Username is already taken!");
         }
 
         if (userRepository.existsByEmail(userDto.getEmail())) {
             return ResponseEntity
-                    .badRequest()
+                    .status(HttpStatus.BAD_REQUEST)
                     .body("Error: Email is already in use!");
         }
 

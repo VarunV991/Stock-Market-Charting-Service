@@ -32,7 +32,6 @@ public class StockPriceMapper {
         StockPriceDto stockPriceDto = mapper.map(stockPrice,StockPriceDto.class);
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         stockPriceDto.setDate(dateFormat.format(stockPrice.getDate()));
-        stockPriceDto.setTime(stockPrice.getTime().toString());
         StockExchange stockExchange = stockExchangeRepository.findStockExchangeByName(stockPrice.getStockExchangeName())
                 .orElse(null);
         stockPriceDto.setCompanyCode(
@@ -48,7 +47,6 @@ public class StockPriceMapper {
         StockPrice stockPrice = mapper.map(stockPriceDto,StockPrice.class);
         try {
             stockPrice.setDate(new SimpleDateFormat("yyyy-MM-dd").parse(stockPriceDto.getDate()));
-            stockPrice.setTime(LocalTime.parse(stockPriceDto.getTime()));
         } catch (ParseException e) {
             e.printStackTrace();
         }

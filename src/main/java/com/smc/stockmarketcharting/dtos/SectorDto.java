@@ -11,4 +11,9 @@ public class SectorDto {
     private long id;
     private String name;
     private String description;
+
+    public SectorDto(String name, String description){
+        this.name = name;
+        this.description = description;
+    }
 }

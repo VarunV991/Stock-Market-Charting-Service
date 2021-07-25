@@ -31,9 +31,7 @@ public class StockExchangeController{
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<StockExchangeDto> save(@RequestBody StockExchangeDto stockExchangeDto){
         StockExchangeDto stockExchange = stockExchangeService.save(stockExchangeDto);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(stockExchange.getId())
-                .toUri();
-        return ResponseEntity.created(location).build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(stockExchange);
     }
 
     @PutMapping("/edit")

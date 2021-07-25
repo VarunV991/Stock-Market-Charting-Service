@@ -22,7 +22,7 @@ public class StockPrice {
     private long id;
     private float price;
     private Date date;
-    private LocalTime time;
+    private String time;
     private String stockExchangeName;
 
     @ManyToOne(fetch = FetchType.LAZY)
