@@ -190,8 +190,9 @@ public class StockPriceServiceImpl implements StockPriceService {
         List<StockPriceOutputDto> outputDtos = new ArrayList<>(datePriceMap.values());
         Map<String,Double> outputMap = new TreeMap<>();
         for(StockPriceOutputDto outputDto:outputDtos){
-            outputMap.put(outputDto.getDate(),
-                    Double.valueOf(outputDto.getPrice()/outputDto.getNoOfEntries()));
+            double price = outputDto.getPrice() / outputDto.getNoOfEntries();
+            price = Math.round(price*100.0)/100.0;
+            outputMap.put(outputDto.getDate(),price);
         }
         return outputMap;
     }

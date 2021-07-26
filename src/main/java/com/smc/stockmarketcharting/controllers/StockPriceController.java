@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@CrossOrigin
 @RequestMapping("/stock-price")
 public class StockPriceController {
     @Autowired
@@ -25,21 +24,6 @@ public class StockPriceController {
 
     @Autowired
     StockPriceService stockPriceService;
-
-    @PostMapping(value = "/add",consumes = "application/json")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Object> save(@RequestBody StockPriceDto stockPriceDto){
-
-        StockPriceDto stockPrice = stockPriceService.save(stockPriceDto);
-        if(stockPrice == null){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Could not save the stock price data for company code"+stockPriceDto.getCompanyCode());
-        }
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(stockPrice.getId())
-                .toUri();
-
-        return ResponseEntity.created(location).build();
-    }
 
     @PostMapping(value = "/addList")
     @PreAuthorize("hasRole('ADMIN')")
