@@ -130,6 +130,43 @@ public class UserController {
         return ResponseEntity.ok("User registered successfully!");
     }
 
+    @PatchMapping("/edit")
+    public ResponseEntity<?> edit(@RequestBody UserDto userDto){
+        try{
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(userDto.getUsername(), userDto.getPassword()));
+
+            User user = userRepository.findByUsername(userDto.getUsername()).orElse(null);
+            if(userDto.getNewPassword()!=null && user!=null){
+                user.setPassword(encoder.encode(userDto.getNewPassword()));
+                user = userRepository.save(user);
+                authentication = authenticationManager.authenticate(
+                        new UsernamePasswordAuthenticationToken(userDto.getUsername(), userDto.getNewPassword()));
+            }
+            user.setMobileNumber(userDto.getMobileNumber());
+            userRepository.save(user);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            String jwt = jwtUtils.generateJwtToken(authentication);
+
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+            String role = userDetails.getAuthorities().stream()
+                    .map(item -> item.getAuthority())
+                    .collect(Collectors.toList()).get(0);
+
+            return ResponseEntity.ok(new JwtResponseDto(jwt,
+                    userDetails.getId(),
+                    userDetails.getUsername(),
+                    userDetails.getEmail(),
+                    userDetails.getMobileNumber(),
+                    role));
+        }
+        catch (Exception e){
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("Invalid Credentials");
+        }
+    }
+
     @GetMapping(value="/confirmuser/{userid}")
     public String confirmationPage(@PathVariable(value = "userid") Long userId) {
         return userService.confirmationPage(userId);
