@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
         prop.put("mail.smtp.port", "587");
         prop.put("mail.smtp.auth", "true");
         prop.put("mail.smtp.starttls.required","true");
-        prop.put("mail.smtp.ssl.protocols","[SSLv2Hello, SSLv3, TLSv1, TLSv1.1, TLSv1.2]");
+        prop.put("mail.smtp.ssl.protocols","TLSv1");
         prop.put("mail.smtp.starttls.enable", "true"); //TLS
 
         Session session = Session.getInstance(prop,
