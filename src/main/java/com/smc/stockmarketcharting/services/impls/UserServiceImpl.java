@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService {
         String subject = "User Confirmation Mail";
         Email to = new Email(user.getEmail());
         Content content = new Content("text/html",
-                "<h3><a href =\"https://smc-service.herokuapp.com/user/confirmuser/"+userid+"/\"> Click to confirm </a></h3>");
+                "<h3><a href =\"http://127.0.0.1:8080/user/confirmuser/"+userid+"/\"> Click to confirm </a></h3>");
         Mail mail = new Mail(from, subject, to, content);
 
         SendGrid sg = new SendGrid(sendGridApiKey);
