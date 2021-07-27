@@ -7,7 +7,6 @@ import com.smc.stockmarketcharting.models.Role;
 import com.smc.stockmarketcharting.models.User;
 import com.smc.stockmarketcharting.repositories.RoleRepository;
 import com.smc.stockmarketcharting.repositories.UserRepository;
-import com.smc.stockmarketcharting.security.jwt.AuthEntryPointJwt;
 import com.smc.stockmarketcharting.security.jwt.JwtUtils;
 import com.smc.stockmarketcharting.security.services.UserDetailsImpl;
 import com.smc.stockmarketcharting.services.UserService;

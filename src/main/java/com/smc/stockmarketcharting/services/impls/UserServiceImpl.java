@@ -47,26 +47,41 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void sendEmail(Long userid){
-        logger.debug(Long.toString(userid));
         User user = userRepository.findById(userid).get();
+        final String username = "smcroot7@gmail.com";
+        final String password = "root@123";
 
-        Email from = new Email("smcroot7@gmail.com");
-        String subject = "User Confirmation Mail";
-        Email to = new Email(user.getEmail());
-        Content content = new Content("text/html",
-                "<h3><a href =\"http://127.0.0.1:8080/user/confirmuser/"+userid+"/\"> Click to confirm </a></h3>");
-        Mail mail = new Mail(from, subject, to, content);
+        Properties prop = new Properties();
+        prop.put("mail.smtp.host", "smtp.gmail.com");
+        prop.put("mail.smtp.port", "587");
+        prop.put("mail.smtp.auth", "true");
+        prop.put("mail.smtp.starttls.enable", "true"); //TLS
 
-        SendGrid sg = new SendGrid(sendGridApiKey);
-        Request request = new Request();
+        Session session = Session.getInstance(prop,
+                new javax.mail.Authenticator() {
+                    protected javax.mail.PasswordAuthentication getPasswordAuthentication() {
+                        return new javax.mail.PasswordAuthentication(username, password);
+                    }
+                });
+
         try {
-            request.setMethod(Method.POST);
-            request.setEndpoint("mail/send");
-            request.setBody(mail.build());
-            Response response = sg.api(request);
-            logger.info(response.getBody());
-        } catch (IOException ex) {
-            ex.printStackTrace();
+
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress("smcroot7@gmail.com"));
+            message.setRecipients(
+                    Message.RecipientType.TO,
+                    InternetAddress.parse(user.getEmail())
+            );
+            message.setSubject("User confirmation email");
+            message.setContent(
+                    "<h3><a href =\"https://smc-service-gateway.herokuapp.com/api/smc/user/confirmuser/"+userid+"/\"> Click to confirm </a></h3>",
+                    "text/html");
+            Transport.send(message);
+
+            System.out.println("Done");
+
+        } catch (MessagingException e) {
+            e.printStackTrace();
         }
     }
 
