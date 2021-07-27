@@ -43,9 +43,14 @@ public class IpoServiceImpl implements IpoService {
         if(ipoDto.getCompanyName()!=null){
             Company company = companyRepository.findCompanyByName(ipoDto.getCompanyName()).orElse(null);
             if(company!=null){
-                ipo.setCompany(company);
-                ipo = ipoRepository.save(ipo);
-                return ipoMapper.toIpoDto(ipo);
+                if(company.getIpo()==null){
+                    ipo.setCompany(company);
+                    ipo = ipoRepository.save(ipo);
+                    return ipoMapper.toIpoDto(ipo);
+                }
+                else{
+                    throw new RuntimeException("The company already has an IPO entry.");
+                }
             }
         }
         return null;
@@ -59,12 +64,15 @@ public class IpoServiceImpl implements IpoService {
             if(ipoDto.getCompanyName()!=null){
                 Company company = companyRepository.findCompanyByName(ipoDto.getCompanyName())
                         .orElse(null);
-                if(company!=null){
+                if(company!=null && company.getIpo().getId()==ipoDto.getId()){
                     ipo.setCompany(company);
                     company.setIpo(ipo);
                     companyRepository.save(company);
                     ipo = ipoRepository.save(ipo);
                     return ipoMapper.toIpoDto(ipo);
+                }
+                else{
+                    throw new RuntimeException("The company already has an IPO entry.");
                 }
             }
         }
